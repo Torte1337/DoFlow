@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DoFlow.Views.AuthPage"
+             xmlns:pm="clr-namespace:DoFlow.ViewModels"
+             BackgroundColor="#FF323232"
+             xmlns:views="clr-namespace:DoFlow.Views.ContentViews"
+             Title="">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="300"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+
+        <Border StrokeShape="RoundRectangle 15,15,15,15"
+            Stroke="Gray"
+            BackgroundColor="#FF00B7FF"
+            Grid.Row="0"
+            HeightRequest="150"
+            WidthRequest="150"
+            HorizontalOptions="Center">
+        </Border>
+
+
+        <ContentView IsVisible="{Binding LoginViewActive}" Content="{Binding SignInView}" Grid.Row="2"/>
+        <ContentView IsVisible="{Binding LostViewActive}" Content="{Binding LostView}" Grid.Row="2"/>
+        <ContentView IsVisible="{Binding RegisterViewActive}" Content="{Binding RegisterView}" Grid.Row="2"/>
+
+    </Grid>
+    
+</ContentPage>

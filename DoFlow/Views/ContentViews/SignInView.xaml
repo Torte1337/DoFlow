@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:pm="clr-namespace:DoFlow.ViewModels"
+             x:Class="DoFlow.Views.ContentViews.SignInView">
+
+
+    <Border StrokeShape="RoundRectangle 50,50,0,0"
+                Stroke="Transparent"
+                Grid.Row="2"
+                BackgroundColor="White" 
+                x:DataType="pm:AuthPageModel">
+
+            <Grid Margin="20" x:DataType="pm:AuthPageModel">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="60"/>
+                </Grid.RowDefinitions>
+<!-- header text -->
+                <Label Text="Anmeldung" 
+                    FontAttributes="Bold" 
+                    FontSize="25" 
+                    FontFamily=""
+                    HorizontalOptions="Center" 
+                    HorizontalTextAlignment="Center"
+                    VerticalOptions="Center" 
+                    VerticalTextAlignment="Center" 
+                    Grid.Row="0"
+                    Grid.ColumnSpan="2"/>
+<!-- Emailfeld -->
+                <Border StrokeShape="RoundRectangle 5,5,5,5"
+                        WidthRequest="300"
+                        HeightRequest="50"
+                        Grid.Row="2"
+                        Grid.ColumnSpan="2">
+                        <Entry Placeholder="Email Adresse..." Margin="5"/>
+
+                </Border>
+<!-- Passwortfeld -->
+                <Border StrokeShape="RoundRectangle 5,5,5,5"
+                        WidthRequest="300"
+                        HeightRequest="50"
+                        Grid.Row="3"
+                        Grid.ColumnSpan="2">
+                        <Entry Placeholder="Passwort..." 
+                            Margin="5"
+                            Text="{Binding PasswordField}"/>
+
+                </Border>
+
+<!-- Register und Lostpasswort Buttons -->
+                <HorizontalStackLayout Grid.Row="4" HorizontalOptions="Center" Grid.ColumnSpan="2" Spacing="20" Margin="20">
+
+                    <Label Text="Passwort vergessen...?" TextColor="Gray">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GoToLostPasswordCommand}"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <Label Text="Account erstellen?" TextColor="#FF00B7FF">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GoToRegisterCommand}"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                </HorizontalStackLayout>
+<!-- Login Button -->
+                <Button Grid.Row="5" Grid.ColumnSpan="2"
+                    WidthRequest="200" HeightRequest="50"
+                    BackgroundColor="#FF2D2D2D"
+                    Text="Anmelden"
+                    Command="{Binding SignInCommand}"
+                    TextColor="White"/>
+
+
+            </Grid>
+
+    </Border>
+
+    
+</ContentView>
