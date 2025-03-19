@@ -40,6 +40,7 @@
                         <Entry Placeholder="Email Adresse..." Margin="5"/>
 
                 </Border>
+
 <!-- Passwortfeld -->
                 <Border StrokeShape="RoundRectangle 5,5,5,5"
                         WidthRequest="300"
