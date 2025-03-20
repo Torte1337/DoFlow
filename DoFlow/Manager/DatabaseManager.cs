@@ -1,9 +1,11 @@
 using System;
+using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using DoFlow.Context;
 using DoFlow.Models;
 using Firebase.Auth;
 using Firebase.Database;
+using Firebase.Database.Query;
 
 namespace DoFlow.Manager;
 
@@ -11,7 +13,6 @@ public partial class DatabaseManager : ObservableObject
 {
     private readonly FirebaseAuthClient authClient;
     private readonly FirebaseClient _client;
-
     [ObservableProperty] private UserModel activeUser = null;
 
     public DatabaseManager(FirebaseAuthClient client, FirebaseClient cl)
@@ -152,4 +153,150 @@ public partial class DatabaseManager : ObservableObject
     
     
     #endregion
+    #region Teammethoden
+    /// <summary>
+    /// Methode fügt ein Team in die Datenbank hinzu
+    /// </summary>
+    /// <param name="newTeam"></param>
+    /// <returns></returns>
+    public async Task<bool> OnAddTeamToDatabase(TeamModel newTeam, UserModel newMember)
+    {
+        try
+        {
+            await _client.Child("Teams").Child(newTeam.TeamId).Child("Members").Child(newMember.Id).PutAsync(newTeam);
+            return true;
+        }
+        catch(Exception ex)
+        {
+            return false;
+        }
+    }
+    /// <summary>
+    /// Methode löscht ein Team aus der Datenbank
+    /// </summary>
+    /// <param name="team"></param>
+    /// <returns></returns>
+    public async Task<bool> OnDeleteTeam(TeamModel team)
+    {
+        try
+        {
+            await _client.Child("Teams").Child(team.TeamId).DeleteAsync();
+            return true;
+        }
+        catch(Exception ex)
+        {
+            return false;
+        }
+    }
+    /// <summary>
+    /// Methode updated ein existierendes Team
+    /// </summary>
+    /// <param name="team"></param>
+    /// <returns></returns>
+    public async Task<bool> OnUpdateTeam(TeamModel team)
+    {
+        try
+        {
+            await _client.Child("Teams").Child(team.TeamId).PutAsync(team);
+            return true;
+        }
+        catch(Exception ex)
+        {
+            return false;
+        }
+    }
+    public async Task<bool> OnSearchTeam(string Id)
+    {
+        try
+        {
+            var teamQuery = await _client.Child("Teams").Child(Id).OnceSingleAsync<TeamModel>();
+
+            if(teamQuery != null)
+                return true;
+            else
+                return false;
+        }
+        catch(Exception ex)
+        {
+            return false;
+        }
+    }
+    public async Task<bool> OnJoinTeam(string teamID, UserModel user)
+    {
+        try
+        {
+            await _client
+                .Child("Teams")
+                .Child(teamID)
+                .Child("Members")
+                .Child(user.Id)
+                .PutAsync(user);
+            return true;
+        }
+        catch(Exception ex)
+        {
+            return false;
+        }
+    }
+    public async Task<List<TeamModel>> OnGetMyTeams(UserModel user)
+    {
+        try
+        {
+            var allTeams = await _client.Child("Teams").OnceAsync<TeamModel>();
+
+            var userTeams = new List<TeamModel>();
+
+            foreach(var team in allTeams)
+            {
+                var teamData = team.Object;
+
+                // Mitglieder abrufen
+                var membersSnapshot = await _client
+                    .Child("Teams")
+                    .Child(team.Key) // Team-ID als Firebase-Schlüssel
+                    .Child("Members")
+                    .OnceAsync<UserModel>();
+
+                // Prüfen, ob der Benutzer unter den Mitgliedern ist    
+                var isMember = membersSnapshot.Any(m => m.Object.Id == user.Id);
+
+                if (isMember)
+                {
+                    // Mitglieder dem Team zuweisen, bevor es zurückgegeben wird
+                    teamData.Members = membersSnapshot.Select(m => m.Object).ToList();
+                    userTeams.Add(teamData);
+                }
+            }
+
+            return userTeams;
+        }
+        catch(Exception ex)
+        {
+            return null;
+        }
+    }
+    public async Task<bool> OnLeaveTeam(string teamId, string userId)
+    {
+        try
+        {
+            await _client
+            .Child("Teams")
+            .Child(teamId)
+            .Child("Members")
+            .Child(userId)
+            .DeleteAsync();
+
+            return true;
+        }
+        catch(Exception ex)
+        {
+            return false;
+        }
+    }
+    #endregion
+
+
+
+
+
 }

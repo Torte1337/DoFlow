@@ -37,7 +37,7 @@
                         HeightRequest="50"
                         Grid.Row="2"
                         Grid.ColumnSpan="2">
-                        <Entry Placeholder="Email Adresse..." Margin="5"/>
+                        <Entry Placeholder="Email Adresse..." Text="{Binding EmailField}" Margin="5"/>
 
                 </Border>
 
@@ -49,6 +49,7 @@
                         Grid.ColumnSpan="2">
                         <Entry Placeholder="Passwort..." 
                             Margin="5"
+                            IsPassword="True"
                             Text="{Binding PasswordField}"/>
 
                 </Border>

@@ -19,25 +19,29 @@
                     <RowDefinition Height="60"/>
                     <RowDefinition Height="60"/>
                     <RowDefinition Height="60"/>
+                    <RowDefinition Height="60"/>
                 </Grid.RowDefinitions>
-<!-- header text -->
-                <Label Text="Account erstellen" 
-                    FontAttributes="Bold" 
-                    FontSize="25" 
-                    FontFamily=""
-                    HorizontalOptions="Center" 
-                    HorizontalTextAlignment="Center"
-                    VerticalOptions="Center" 
-                    VerticalTextAlignment="Center" 
-                    Grid.Row="0"
-                    Grid.ColumnSpan="2"/>
+                
+                 <!-- header text -->
+                                <Label Text="Account erstellen" 
+                                FontAttributes="Bold" 
+                                FontSize="25" 
+                                FontFamily=""
+                                HorizontalOptions="Center" 
+                                HorizontalTextAlignment="Center"
+                                VerticalOptions="Center" 
+                                VerticalTextAlignment="Center" 
+                                Grid.Row="0"
+                                Grid.ColumnSpan="2"/>
+
 <!-- Emailfeld -->
                 <Border StrokeShape="RoundRectangle 5,5,5,5"
                         WidthRequest="300"
                         HeightRequest="50"
                         Grid.Row="2"
                         Grid.ColumnSpan="2">
-                        <Entry Placeholder="Email Adresse..." Margin="5"/>
+                        <Entry Placeholder="Email Adresse..." Margin="5"
+                                Text="{Binding RegisterEmailField}"/>
 
                 </Border>
 <!-- Passwortfeld -->
@@ -46,7 +50,8 @@
                         HeightRequest="50"
                         Grid.Row="3"
                         Grid.ColumnSpan="2">
-                        <Entry Placeholder="Passwort..." Margin="5" IsPassword="True"/>
+                        <Entry Placeholder="Passwort..." Text="{Binding RegisterPasswordField}"
+                                Margin="5" IsPassword="True"/>
 
                 </Border>
 
@@ -54,9 +59,10 @@
                 <Border StrokeShape="RoundRectangle 5,5,5,5"
                         WidthRequest="300"
                         HeightRequest="50"
-                        Grid.Row="3"
-                        Grid.ColumnSpan="2">
-                        <Entry Placeholder="Benutzername..." Margin="5"/>
+                        Grid.Row="4"
+                        Grid.ColumnSpan="3">
+                        <Entry Placeholder="Benutzername..." 
+                                Text="{Binding RegisterUsernameField}" Margin="5"/>
 
                 </Border>
 
@@ -65,7 +71,16 @@
                     WidthRequest="200" HeightRequest="50"
                     BackgroundColor="#FF2D2D2D"
                     Text="Registrieren"
-                    TextColor="White"/>
+                    TextColor="White"
+                    Command="{Binding RegisterCommand}"/>
+
+<!-- BackButton  -->
+                <Button Grid.Row="6" Grid.ColumnSpan="2"
+                    WidthRequest="200" HeightRequest="50"
+                    BackgroundColor="#FF8E8E8E"
+                    Text="Zurück"
+                    TextColor="White"
+                    Command="{Binding BackButtonCommand}"/>
 
 
             </Grid>

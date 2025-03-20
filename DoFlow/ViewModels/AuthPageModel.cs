@@ -52,7 +52,7 @@ public partial class AuthPageModel : BaseViewModel
     private async Task OnSignIn()
     {
         if(await dbManager.OnSignIn(EmailField,PasswordField))
-            await Shell.Current.GoToAsync("//");
+            await Shell.Current.GoToAsync("//SettingsPage");
     }
     [RelayCommand]
     private async Task OnGoToLostPassword()
@@ -84,6 +84,7 @@ public partial class AuthPageModel : BaseViewModel
     
     private void OnSwitchViews(int viewID)
     {
+        OnClearFields();
         switch(viewID)
         {
             case 0:
@@ -104,6 +105,15 @@ public partial class AuthPageModel : BaseViewModel
                 LostViewActive = true;
             break;
         }
+    }
+    private void OnClearFields()
+    {
+        EmailField = "";
+        PasswordField = "";
+        RegisterEmailField = "";
+        RegisterPasswordField = "";
+        RegisterUsernameField = "";
+        LostEmailField = "";
     }
 
 

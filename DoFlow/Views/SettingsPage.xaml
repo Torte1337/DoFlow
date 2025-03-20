@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DoFlow.Views.SettingsPage"
+             BackgroundColor="#FF323232"
+             Title="">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+
+
+        <Border StrokeShape="RoundRectangle 15,15,15,15"
+            BackgroundColor="White"
+            Stroke="Transparent"
+            WidthRequest="400"
+            HeightRequest="500"
+            Grid.Row="1">
+
+            <VerticalStackLayout Margin="20" WidthRequest="350" Spacing="10">
+                <Button Text="Account löschen" BackgroundColor="#FF2D2D2D"/>
+                <HorizontalStackLayout Spacing="10">
+                    <Border StrokeShape="RoundRectangle 8,8,8,8"
+                        BackgroundColor="Gray"
+                        Stroke="Gray"
+                        WidthRequest="270"
+                        HeightRequest="50">
+                        <Entry Placeholder="Team ID eingeben..." Margin="5"/>
+                    </Border>
+                    <Button Text=">" WidthRequest="70" BackgroundColor="#FF2D2D2D"/>
+                </HorizontalStackLayout>
+
+                <Button Text="Team anlegen" BackgroundColor="#FF2D2D2D"/>
+                
+               
+
+            </VerticalStackLayout>
+
+        </Border>
+
+        <Label Text="2025 © Copyright by Torsten Fergens" 
+            TextColor="White"
+            HorizontalOptions="Center"
+            HorizontalTextAlignment="Center"
+            Grid.Row="2"/>
+    </Grid>
+
+        
+</ContentPage>
