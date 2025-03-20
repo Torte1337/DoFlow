@@ -9,11 +9,4 @@ public partial class SettingsPage : ContentPage
 		InitializeComponent();
 		BindingContext = pm;
 	}
-    protected override void OnDisappearing()
-    {
-        base.OnDisappearing();
-		var pm = (SettingsPageModel)BindingContext;
-		if(pm != null)
-			pm.OnStopListening();
-    }
 }

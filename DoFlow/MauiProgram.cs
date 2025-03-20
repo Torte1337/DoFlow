@@ -50,7 +50,7 @@ public static class MauiProgram
 		builder.Services.AddSingleton(new FirebaseClient(firebaseDatabaseUrl));
 		builder.Services.AddSingleton<DatabaseManager>();
 		builder.Services.AddSingleton<AuthPageModel>();
-		builder.Services.AddSingleton<SettingsPage>();
+		builder.Services.AddSingleton<SettingsPageModel>();
 
 		builder.Services.AddTransient<AuthPage>();
 		builder.Services.AddTransient<SignInView>();

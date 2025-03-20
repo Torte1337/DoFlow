@@ -51,6 +51,27 @@
             <param name="newPassword"></param>
             <returns></returns>
         </member>
+        <member name="M:DoFlow.Manager.DatabaseManager.OnAddTeamToDatabase(DoFlow.Models.TeamModel,DoFlow.Models.UserModel)">
+            <summary>
+            Methode fügt ein Team in die Datenbank hinzu
+            </summary>
+            <param name="newTeam"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DoFlow.Manager.DatabaseManager.OnDeleteTeam(DoFlow.Models.TeamModel)">
+            <summary>
+            Methode löscht ein Team aus der Datenbank
+            </summary>
+            <param name="team"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DoFlow.Manager.DatabaseManager.OnUpdateTeam(DoFlow.Models.TeamModel)">
+            <summary>
+            Methode updated ein existierendes Team
+            </summary>
+            <param name="team"></param>
+            <returns></returns>
+        </member>
         <member name="P:DoFlow.Manager.DatabaseManager.ActiveUser">
             <inheritdoc cref="F:DoFlow.Manager.DatabaseManager.activeUser"/>
         </member>
@@ -134,6 +155,43 @@
         </member>
         <member name="P:DoFlow.ViewModels.AuthPageModel.BackButtonCommand">
             <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:DoFlow.ViewModels.AuthPageModel.OnBackButton"/>.</summary>
+        </member>
+        <member name="T:DoFlow.ViewModels.SettingsPageModel">
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+            <inheritdoc/>
+        </member>
+        <member name="P:DoFlow.ViewModels.SettingsPageModel.Teams">
+            <inheritdoc cref="F:DoFlow.ViewModels.SettingsPageModel._teams"/>
+        </member>
+        <member name="P:DoFlow.ViewModels.SettingsPageModel.TeamidField">
+            <inheritdoc cref="F:DoFlow.ViewModels.SettingsPageModel.teamidField"/>
+        </member>
+        <member name="F:DoFlow.ViewModels.SettingsPageModel.createTeamButtonCommand">
+            <summary>The backing field for <see cref="P:DoFlow.ViewModels.SettingsPageModel.CreateTeamButtonCommand"/>.</summary>
+        </member>
+        <member name="P:DoFlow.ViewModels.SettingsPageModel.CreateTeamButtonCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:DoFlow.ViewModels.SettingsPageModel.OnCreateTeamButton"/>.</summary>
+        </member>
+        <member name="F:DoFlow.ViewModels.SettingsPageModel.deleteTeamCommand">
+            <summary>The backing field for <see cref="P:DoFlow.ViewModels.SettingsPageModel.DeleteTeamCommand"/>.</summary>
+        </member>
+        <member name="P:DoFlow.ViewModels.SettingsPageModel.DeleteTeamCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:DoFlow.ViewModels.SettingsPageModel.OnDeleteTeam"/>.</summary>
+        </member>
+        <member name="F:DoFlow.ViewModels.SettingsPageModel.leaveTeamCommand">
+            <summary>The backing field for <see cref="P:DoFlow.ViewModels.SettingsPageModel.LeaveTeamCommand"/>.</summary>
+        </member>
+        <member name="P:DoFlow.ViewModels.SettingsPageModel.LeaveTeamCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand`1"/> instance wrapping <see cref="M:DoFlow.ViewModels.SettingsPageModel.OnLeaveTeam(System.String)"/>.</summary>
+        </member>
+        <member name="F:DoFlow.ViewModels.SettingsPageModel.joinTeamCommand">
+            <summary>The backing field for <see cref="P:DoFlow.ViewModels.SettingsPageModel.JoinTeamCommand"/>.</summary>
+        </member>
+        <member name="P:DoFlow.ViewModels.SettingsPageModel.JoinTeamCommand">
+            <summary>Gets an <see cref="T:CommunityToolkit.Mvvm.Input.IAsyncRelayCommand"/> instance wrapping <see cref="M:DoFlow.ViewModels.SettingsPageModel.OnJoinTeam"/>.</summary>
         </member>
         <member name="T:DoFlow.Resource">
             <summary>
@@ -306,6 +364,12 @@
         <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.RegisterView">
             <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "RegisterView" generated properties.</summary>
         </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.Teams">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "Teams" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangingArgs.TeamidField">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangingEventArgs"/> instance for all "TeamidField" generated properties.</summary>
+        </member>
         <member name="T:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs">
             <summary>
             A helper type providing cached, reusable <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instances
@@ -350,6 +414,12 @@
         </member>
         <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.RegisterView">
             <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "RegisterView" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.Teams">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "Teams" generated properties.</summary>
+        </member>
+        <member name="F:CommunityToolkit.Mvvm.ComponentModel.__Internals.__KnownINotifyPropertyChangedArgs.TeamidField">
+            <summary>The cached <see cref="T:System.ComponentModel.PropertyChangedEventArgs"/> instance for all "TeamidField" generated properties.</summary>
         </member>
     </members>
 </doc>

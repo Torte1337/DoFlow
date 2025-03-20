@@ -8,5 +8,5 @@ public class TeamModel
     public string TeamId { get; set; }
     public string Name { get; set; }
     public string AdminId { get; set; }
-    public List<UserModel> Members { get; set; }
+    public Dictionary<string,UserModel> Members { get;set;}
 }

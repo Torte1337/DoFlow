@@ -4,6 +4,10 @@
              x:Class="DoFlow.Views.DashboardPage"
              BackgroundColor="#FF323232"
 
-             Title="">
+             Title="Dashboard">
+
+             <VerticalStackLayout>
+                <Label Text="Test 12354"/>
+             </VerticalStackLayout>
     
 </ContentPage>

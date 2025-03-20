@@ -52,7 +52,9 @@ public partial class AuthPageModel : BaseViewModel
     private async Task OnSignIn()
     {
         if(await dbManager.OnSignIn(EmailField,PasswordField))
-            await Shell.Current.GoToAsync("//SettingsPage");
+        {
+            await Shell.Current.GoToAsync("SettingsPage");
+        }
     }
     [RelayCommand]
     private async Task OnGoToLostPassword()

@@ -2,10 +2,12 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="DoFlow.Views.SettingsPage"
+             xmlns:pm="clr-namespace:DoFlow.ViewModels"
+             xmlns:model="clr-namespace:DoFlow.Models"
              BackgroundColor="#FF323232"
              Title="">
 
-    <Grid>
+    <Grid x:DataType="pm:SettingsPageModel">
         <Grid.RowDefinitions>
             <RowDefinition Height="100"/>
             <RowDefinition Height="*"/>
@@ -28,14 +30,36 @@
                         Stroke="Gray"
                         WidthRequest="270"
                         HeightRequest="50">
-                        <Entry Placeholder="Team ID eingeben..." Margin="5"/>
+                        <Entry Placeholder="Team ID eingeben..." Text="{Binding TeamidField}" Margin="5"/>
                     </Border>
-                    <Button Text=">" WidthRequest="70" BackgroundColor="#FF2D2D2D"/>
+                    <Button Text=">" WidthRequest="70" BackgroundColor="#FF2D2D2D" Command="{Binding JoinTeamCommand}"/>
                 </HorizontalStackLayout>
 
-                <Button Text="Team anlegen" BackgroundColor="#FF2D2D2D"/>
+                <Button Text="Team anlegen" BackgroundColor="#FF2D2D2D" Command="{Binding CreateTeamButtonCommand}"/>
                 
-               
+                <ListView ItemsSource="{Binding Teams}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Grid x:DataType="model:TeamModel">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    
+                                    <Label Text="{Binding Name}" Grid.Row="0" Grid.Column="0"/>
+                                    <Label Text="{Binding TeamId}" Grid.Row="1" Grid.Column="0"/>
+                                    <Button Text="Verlassen" BackgroundColor="Red" Grid.RowSpan="2" Grid.Column="1"/>
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
 
             </VerticalStackLayout>
 

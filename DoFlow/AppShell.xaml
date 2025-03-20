@@ -5,10 +5,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:DoFlow"
     xmlns:views="clr-namespace:DoFlow.Views"
-    Shell.FlyoutBehavior="Disabled"
     Shell.TabBarBackgroundColor="#FF323232"
-    Shell.TabBarTitleColor="White"
-    Shell.TabBarUnselectedColor="#FF8C8C8C"
+    Shell.TabBarTitleColor="Black"
+    Shell.TabBarUnselectedColor="Gray"
+    Shell.NavBarIsVisible ="false"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     Title="DoFlow">
 
@@ -16,21 +16,15 @@
         <toolkit:StatusBarBehavior StatusBarColor="#FF323232"/>
     </Shell.Behaviors>
 
-    <ShellContent
-                Title="Auth"
-                ContentTemplate="{DataTemplate views:AuthPage}"
-                Route="AuthPage" />
+    <ShellContent Route="AuthPage" ContentTemplate="{DataTemplate views:AuthPage}"/>
 
-    <TabBar>
+
+    <TabBar IsVisible="False">
         <Tab Title="Dashboard">
-            <ShellContent Title="Dashboard"
-                        ContentTemplate="{DataTemplate views:DashboardPage}"
-                        Route="DashboardPage"/>
+            <ShellContent ContentTemplate="{DataTemplate views:DashboardPage}"/>
         </Tab>
         <Tab Title="Einstellungen">
-           <ShellContent Title="Einstellungen"
-                        ContentTemplate="{DataTemplate views:SettingsPage}"
-                        Route="SettingsPage"/>
+           <ShellContent ContentTemplate="{DataTemplate views:SettingsPage}"/>
         </Tab>
     </TabBar>
    

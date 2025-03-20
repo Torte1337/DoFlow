@@ -163,7 +163,8 @@ public partial class DatabaseManager : ObservableObject
     {
         try
         {
-            await _client.Child("Teams").Child(newTeam.TeamId).Child("Members").Child(newMember.Id).PutAsync(newTeam);
+            await _client.Child("Teams").Child(newTeam.TeamId).PutAsync(newTeam);
+            await OnJoinTeam(newTeam.TeamId,newMember);
             return true;
         }
         catch(Exception ex)
@@ -233,45 +234,35 @@ public partial class DatabaseManager : ObservableObject
                 .PutAsync(user);
             return true;
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
+            Console.WriteLine($"Fehler: {ex.Message}");
             return false;
         }
     }
-    public async Task<List<TeamModel>> OnGetMyTeams(UserModel user)
+    public async Task<List<TeamModel>> OnGetMyTeams(string userID)
     {
         try
         {
             var allTeams = await _client.Child("Teams").OnceAsync<TeamModel>();
-
             var userTeams = new List<TeamModel>();
 
-            foreach(var team in allTeams)
+            foreach (var team in allTeams)
             {
                 var teamData = team.Object;
 
-                // Mitglieder abrufen
-                var membersSnapshot = await _client
-                    .Child("Teams")
-                    .Child(team.Key) // Team-ID als Firebase-Schlüssel
-                    .Child("Members")
-                    .OnceAsync<UserModel>();
-
-                // Prüfen, ob der Benutzer unter den Mitgliedern ist    
-                var isMember = membersSnapshot.Any(m => m.Object.Id == user.Id);
-
-                if (isMember)
+                // Prüfen, ob der Benutzer in den Members enthalten ist
+                if (teamData.Members != null && teamData.Members.ContainsKey(userID))
                 {
-                    // Mitglieder dem Team zuweisen, bevor es zurückgegeben wird
-                    teamData.Members = membersSnapshot.Select(m => m.Object).ToList();
                     userTeams.Add(teamData);
                 }
             }
 
             return userTeams;
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
+            Console.WriteLine($"Fehler: {ex.Message}");
             return null;
         }
     }

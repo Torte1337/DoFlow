@@ -18,9 +18,16 @@ public partial class SettingsPageModel : BaseViewModel
     public SettingsPageModel(DatabaseManager mgr)
     {
         manager = mgr;
+        OnLoadData();
+        
     }
 
-
+    private async void OnLoadData()
+    {
+        List<TeamModel> dbTeamList = await manager.OnGetMyTeams(manager.ActiveUser.Id);
+        Teams = new ObservableCollection<TeamModel>(dbTeamList);
+        ;
+    }
     [RelayCommand]
     private async Task OnCreateTeamButton()
     {
@@ -37,7 +44,10 @@ public partial class SettingsPageModel : BaseViewModel
                     Name = teamname,
                     AdminId = manager.ActiveUser.Id
                 };
-                await manager.OnAddTeamToDatabase(newTeam,manager.ActiveUser);
+                if(await manager.OnAddTeamToDatabase(newTeam,manager.ActiveUser))
+                {
+                    Teams.Add(newTeam);
+                }
             }
         }
     }
