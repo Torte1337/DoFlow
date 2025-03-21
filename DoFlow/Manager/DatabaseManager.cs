@@ -1,7 +1,10 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Reactive.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using DoFlow.Context;
+using DoFlow.Messages;
 using DoFlow.Models;
 using Firebase.Auth;
 using Firebase.Database;
@@ -173,19 +176,124 @@ public partial class DatabaseManager : ObservableObject
             return false;
         }
     }
-    
-    
-    #endregion
+    public async Task<bool> OnDeleteAccount()
+    {
+        try
+        {
+            await _client.Child("Users").Child(ActiveUser.Id).DeleteAsync();
 
-    #region Todos Team
+            var allTeams = await _client.Child("Teams").OnceAsync<TeamModel>();
+
+            foreach(var team in allTeams)
+            {
+                if(team.Object.MemberIds.Contains(ActiveUser.Id))
+                {
+                    if(team.Object.AdminId == ActiveUser.Id)
+                        await OnLeaveTeam(team.Object.TeamId);
+                    else
+                    {
+                        team.Object.MemberIds.Remove(ActiveUser.Id);
+                        await _client.Child("Teams").Child(team.Object.TeamId).Child("MemberIds").PutAsync(team.Object.MemberIds);
+                    }
+                }
+            }
+
+            await authClient.User.DeleteAsync();
+            OnLogout();
+            WeakReferenceMessenger.Default.Send(new MessageUserDeleted());
+            return true;
+        }
+        catch(Exception ex)
+        {
+            return false;
+        }
+    }
     
     #endregion
 
     #region Team Methods
+    public async Task<bool> OnCreateNewTeam(TeamModel model)
+    {
+        try
+        {
+            await _client.Child("Teams").Child(model.TeamId).PutAsync(model);
+            return true;
+        }
+        catch(Exception ex)
+        {
+            return false;
+        }
+    }
+    public async Task<bool> OnJoinTeam(string teamId)
+    {
+        try
+        {
+            var team = await _client.Child("Teams").Child(teamId).OnceSingleAsync<TeamModel>();
 
+            if(team == null)
+                return false;
+
+            if(!team.MemberIds.Contains(ActiveUser.Id))
+            {
+                team.MemberIds.Add(ActiveUser.Id);
+                await _client.Child("Teams").Child(teamId).Child("MemberIds").PutAsync(team.MemberIds);
+            }
+            return true;
+        }
+        catch(Exception ex)
+        {
+            return false;
+        }
+    }
+    public async Task<bool> OnLeaveTeam(string teamId)
+    {
+        try
+        {
+            var team = await _client.Child("Teams").Child(teamId).OnceSingleAsync<TeamModel>();
+
+            if (team == null)
+                return false;
+
+            if(team.AdminId == ActiveUser.Id)
+            {
+                await _client.Child("Teams").Child(teamId).DeleteAsync();
+                return true;
+            }
+
+            if (team.MemberIds.Contains(ActiveUser.Id))
+            {
+                team.MemberIds.Remove(ActiveUser.Id);
+
+                await _client.Child("Teams").Child(teamId).Child("MemberIds").PutAsync(team.MemberIds);
+            }
+
+            return true;
+        }
+        catch(Exception ex)
+        {
+            return false;
+        }
+    }
+    public async Task<List<TeamModel>> OnGetUserTeams()
+    {
+        try
+        {
+            var allTeams = await _client.Child("Teams").OnceAsync<TeamModel>();
+            var userTeams = allTeams
+                            .Where(team => team.Object.MemberIds.Contains(ActiveUser.Id))
+                            .Select(team => team.Object)
+                            .ToList();
+
+            return userTeams;
+        }
+        catch(Exception ex)
+        {
+            return null;
+        }
+    }
     #endregion
 
-    #region Todos Personal
+    #region Todos Personal/Team
     public async Task<bool> OnAddTodo(TodoModel newTodo)
     {
         try
@@ -198,7 +306,8 @@ public partial class DatabaseManager : ObservableObject
             }
             else if(!string.IsNullOrEmpty(newTodo.TeamId))
             {
-                //Hier wird nicht im User der Task gespeichert sondern im Team
+                //Team Task
+                await _client.Child("Teams").Child(newTodo.TeamId).Child("Tasks").Child(newTodo.Id).PutAsync(newTodo);
                 return true;
             }
             else
@@ -216,6 +325,24 @@ public partial class DatabaseManager : ObservableObject
         {
             var tasks = await _client.Child("Users")
                                      .Child(userId)
+                                     .Child("Tasks")
+                                     .OnceAsync<TodoModel>();
+
+            var result = tasks.Select(x => x.Object).ToList();
+
+            return result;
+        }
+        catch(Exception ex)
+        {
+            return null;
+        }
+    }
+    public async Task<List<TodoModel>> OnGetTeamTasks(string teamId)
+    {
+        try
+        {
+            var tasks = await _client.Child("Teams")
+                                     .Child(teamId)
                                      .Child("Tasks")
                                      .OnceAsync<TodoModel>();
 
@@ -255,8 +382,5 @@ public partial class DatabaseManager : ObservableObject
         }
     }
     #endregion
-
-
-
 
 }

@@ -5,6 +5,10 @@ using CommunityToolkit.Mvvm.Input;
 using DoFlow.Manager;
 using DoFlow.Models;
 using DoFlow.ViewModels.ViewModelBase;
+using DoFlow.Views;
+using CommunityToolkit.Mvvm.Messaging;
+using DoFlow.Messages;
+using Android.OS;
 
 namespace DoFlow.ViewModels;
 
@@ -15,17 +19,24 @@ public partial class SettingsPageModel : BaseViewModel
 
     [ObservableProperty] private ObservableCollection<TeamModel> _teams = new ObservableCollection<TeamModel>();
     [ObservableProperty] private string teamidField;
+
     public SettingsPageModel(DatabaseManager mgr)
     {
         manager = mgr;
         OnLoadData();
-        
+        WeakReferenceMessenger.Default.Register<MessageUserDeleted>(this,OnCleanMethod);
     }
-
+    private void OnCleanMethod(object recipient, MessageUserDeleted msg)
+    {
+        Teams.Clear();
+        TeamidField = "";
+    }
     private async void OnLoadData()
     {
-        // List<TeamModel> dbTeamList = await manager.OnGetMyTeams(manager.ActiveUser.Id);
-        // Teams = new ObservableCollection<TeamModel>(dbTeamList);
+        if(Teams is {Count: > 0})
+            Teams.Clear();
+
+        Teams = new ObservableCollection<TeamModel>(await manager.OnGetUserTeams());
     }
     [RelayCommand]
     private async Task OnCreateTeamButton()
@@ -41,12 +52,17 @@ public partial class SettingsPageModel : BaseViewModel
                     Id = Guid.NewGuid().ToString(),
                     TeamId = result1,
                     Name = teamname,
-                    AdminId = manager.ActiveUser.Id
+                    AdminId = manager.ActiveUser.Id,
+                    MemberIds = new List<string>
+                    {
+                        manager.ActiveUser.Id
+                    },
+                    Tasks = new List<TodoModel>()
                 };
-                // if(await manager.OnAddTeamToDatabase(newTeam,manager.ActiveUser))
-                // {
-                //     Teams.Add(newTeam);
-                // }
+                if(await manager.OnCreateNewTeam(newTeam))
+                {
+                    Teams.Add(newTeam);
+                }
             }
         }
     }
@@ -54,34 +70,36 @@ public partial class SettingsPageModel : BaseViewModel
     [RelayCommand]
     private async Task OnLeaveTeam(string teamid)
     {
-        // if(await manager.OnLeaveTeam(teamid,manager.ActiveUser.Id))
-        // {
-        //     await Shell.Current.DisplayAlert("Info", "Das wurde verlassen","Ok");
-        //     OnLoadData();
-        // }
+        if(await manager.OnLeaveTeam(teamid))
+        {
+            await Shell.Current.DisplayAlert("Info", "Das wurde verlassen","Ok");
+            OnLoadData();
+        }
     }
     [RelayCommand]
     private async Task OnJoinTeam()
     {
-        // if(await manager.OnSearchTeam(TeamidField))
-        // {
-        //     if(await manager.OnJoinTeam(TeamidField,manager.ActiveUser))
-        //     {
-        //         TeamidField = "";
-        //         await Shell.Current.DisplayAlert("Info","Sie sind nun im Team","Ok");
-        //     }
-        //     else
-        //     {
-        //         await Shell.Current.DisplayAlert("Fehler","Beim beitreten des Teams ist ein Fehler aufgetreten.","Ok");
-        //         TeamidField = "";
-        //         return;
-        //     }
-        // }
-        // else
-        // {
-        //     await Shell.Current.DisplayAlert("Fehler","Das Team mit dieser ID: " +  TeamidField  + " wurde nicht gefunden","Ok");
-        //     TeamidField = "";
-        //     return;
-        // }
+        if(await manager.OnJoinTeam(TeamidField))
+        {
+            TeamidField = "";
+            await Shell.Current.DisplayAlert("Info","Sie sind nun im Team","Ok");
+        }
+        else
+        {
+            await Shell.Current.DisplayAlert("Fehler","Beim beitreten des Teams ist ein Fehler aufgetreten.","Ok");
+            TeamidField = "";
+            return;
+        }
     }
+    [RelayCommand]
+    private async Task OnDeleteMyAccount()
+    {
+        if(await manager.OnDeleteAccount())
+        {
+            await Shell.Current.DisplayAlert("Info","Dein Account wurde gelöscht, du wirst automatisch zur Anmeldeseite weitergeleitet","Ok");
+            await Shell.Current.GoToAsync($"//{nameof(AuthPage)}");
+        }
+    }
+
+
 }

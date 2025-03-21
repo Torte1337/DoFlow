@@ -7,6 +7,8 @@ using Firebase.Database;
 using DoFlow.Views;
 using DoFlow.ViewModels;
 using DoFlow.Views.ContentViews;
+using DoFlow.ViewModels.ViewModelBase;
+using DoFlow.Services;
 
 namespace DoFlow;
 
@@ -53,9 +55,11 @@ public static class MauiProgram
 		
 		builder.Services.AddSingleton(new FirebaseClient(firebaseDatabaseUrl));
 		builder.Services.AddSingleton<DatabaseManager>();
+		builder.Services.AddSingleton<FirebaseService>();
 		builder.Services.AddSingleton<AuthPageModel>();
 		builder.Services.AddSingleton<SettingsPageModel>();
 		builder.Services.AddSingleton<PersonalTaskPageModel>();
+		builder.Services.AddSingleton<TeamTaskPageModel>();
 
 		builder.Services.AddTransient<AuthPage>();
 		builder.Services.AddTransient<PersonalTaskPage>();

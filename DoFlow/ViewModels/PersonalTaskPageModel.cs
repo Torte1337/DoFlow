@@ -2,7 +2,9 @@ using System;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using DoFlow.Manager;
+using DoFlow.Messages;
 using DoFlow.Models;
 using DoFlow.ViewModels.ViewModelBase;
 
@@ -18,6 +20,11 @@ public partial class PersonalTaskPageModel : BaseViewModel
         manager = mgr;
 
         OnLoadTasks();
+        WeakReferenceMessenger.Default.Register<MessageUserDeleted>(this,OnUserWasDeleted);
+    }
+    private void OnUserWasDeleted(object recipient, MessageUserDeleted msg)
+    {
+        PersonalTasks.Clear();
     }
 
     private async void OnLoadTasks()

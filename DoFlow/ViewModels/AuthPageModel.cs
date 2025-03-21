@@ -55,6 +55,8 @@ public partial class AuthPageModel : BaseViewModel
         if(await dbManager.OnSignIn(EmailField,PasswordField))
         {
             await Shell.Current.GoToAsync($"//{nameof(PersonalTaskPage)}");
+            EmailField = "";
+            PasswordField = "";
         }
     }
     [RelayCommand]

@@ -24,7 +24,7 @@
             Grid.Row="1">
 
             <VerticalStackLayout Margin="20" WidthRequest="350" Spacing="10">
-                <Button Text="Account löschen" BackgroundColor="#FF2D2D2D"/>
+                <Button Text="Account löschen" BackgroundColor="#FF2D2D2D" Command="{Binding DeleteMyAccountCommand}"/>
                 <HorizontalStackLayout Spacing="10">
                     <Border StrokeShape="RoundRectangle 8,8,8,8"
                         BackgroundColor="Gray"
