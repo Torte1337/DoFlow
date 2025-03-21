@@ -24,9 +24,8 @@ public partial class SettingsPageModel : BaseViewModel
 
     private async void OnLoadData()
     {
-        List<TeamModel> dbTeamList = await manager.OnGetMyTeams(manager.ActiveUser.Id);
-        Teams = new ObservableCollection<TeamModel>(dbTeamList);
-        ;
+        // List<TeamModel> dbTeamList = await manager.OnGetMyTeams(manager.ActiveUser.Id);
+        // Teams = new ObservableCollection<TeamModel>(dbTeamList);
     }
     [RelayCommand]
     private async Task OnCreateTeamButton()
@@ -44,49 +43,45 @@ public partial class SettingsPageModel : BaseViewModel
                     Name = teamname,
                     AdminId = manager.ActiveUser.Id
                 };
-                if(await manager.OnAddTeamToDatabase(newTeam,manager.ActiveUser))
-                {
-                    Teams.Add(newTeam);
-                }
+                // if(await manager.OnAddTeamToDatabase(newTeam,manager.ActiveUser))
+                // {
+                //     Teams.Add(newTeam);
+                // }
             }
         }
     }
 
     [RelayCommand]
-    private async Task OnDeleteTeam()
-    {
-
-    }
-    [RelayCommand]
     private async Task OnLeaveTeam(string teamid)
     {
-        if(await manager.OnLeaveTeam(teamid,manager.ActiveUser.Id))
-        {
-            await Shell.Current.DisplayAlert("Info", "Das wurde verlassen","Ok");
-        }
+        // if(await manager.OnLeaveTeam(teamid,manager.ActiveUser.Id))
+        // {
+        //     await Shell.Current.DisplayAlert("Info", "Das wurde verlassen","Ok");
+        //     OnLoadData();
+        // }
     }
     [RelayCommand]
     private async Task OnJoinTeam()
     {
-        if(await manager.OnSearchTeam(TeamidField))
-        {
-            if(await manager.OnJoinTeam(TeamidField,manager.ActiveUser))
-            {
-                TeamidField = "";
-                await Shell.Current.DisplayAlert("Info","Sie sind nun im Team","Ok");
-            }
-            else
-            {
-                await Shell.Current.DisplayAlert("Fehler","Beim beitreten des Teams ist ein Fehler aufgetreten.","Ok");
-                TeamidField = "";
-                return;
-            }
-        }
-        else
-        {
-            await Shell.Current.DisplayAlert("Fehler","Das Team mit dieser ID: " +  TeamidField  + " wurde nicht gefunden","Ok");
-            TeamidField = "";
-            return;
-        }
+        // if(await manager.OnSearchTeam(TeamidField))
+        // {
+        //     if(await manager.OnJoinTeam(TeamidField,manager.ActiveUser))
+        //     {
+        //         TeamidField = "";
+        //         await Shell.Current.DisplayAlert("Info","Sie sind nun im Team","Ok");
+        //     }
+        //     else
+        //     {
+        //         await Shell.Current.DisplayAlert("Fehler","Beim beitreten des Teams ist ein Fehler aufgetreten.","Ok");
+        //         TeamidField = "";
+        //         return;
+        //     }
+        // }
+        // else
+        // {
+        //     await Shell.Current.DisplayAlert("Fehler","Das Team mit dieser ID: " +  TeamidField  + " wurde nicht gefunden","Ok");
+        //     TeamidField = "";
+        //     return;
+        // }
     }
 }

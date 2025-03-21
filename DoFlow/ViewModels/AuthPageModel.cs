@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using DoFlow.Manager;
 using DoFlow.ViewModels.ViewModelBase;
+using DoFlow.Views;
 using DoFlow.Views.ContentViews;
 
 namespace DoFlow.ViewModels;
@@ -53,7 +54,7 @@ public partial class AuthPageModel : BaseViewModel
     {
         if(await dbManager.OnSignIn(EmailField,PasswordField))
         {
-            await Shell.Current.GoToAsync("SettingsPage");
+            await Shell.Current.GoToAsync($"//{nameof(PersonalTaskPage)}");
         }
     }
     [RelayCommand]

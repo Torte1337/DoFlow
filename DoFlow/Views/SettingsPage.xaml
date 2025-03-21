@@ -5,6 +5,7 @@
              xmlns:pm="clr-namespace:DoFlow.ViewModels"
              xmlns:model="clr-namespace:DoFlow.Models"
              BackgroundColor="#FF323232"
+             Shell.TabBarIsVisible="True"
              Title="">
 
     <Grid x:DataType="pm:SettingsPageModel">
@@ -54,7 +55,13 @@
                                     
                                     <Label Text="{Binding Name}" Grid.Row="0" Grid.Column="0"/>
                                     <Label Text="{Binding TeamId}" Grid.Row="1" Grid.Column="0"/>
-                                    <Button Text="Verlassen" BackgroundColor="Red" Grid.RowSpan="2" Grid.Column="1"/>
+                                    
+                                    <Button Text="Verlassen" 
+                                        BackgroundColor="Red" 
+                                        Grid.RowSpan="2" 
+                                        Grid.Column="1" 
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.LeaveTeamCommand}"
+                                        CommandParameter="{Binding TeamId}"/>
                                 </Grid>
                             </ViewCell>
                         </DataTemplate>

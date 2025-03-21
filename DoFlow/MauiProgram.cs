@@ -30,6 +30,10 @@ public static class MauiProgram
 		{
 			h.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
 		});
+		Microsoft.Maui.Handlers.PickerHandler.Mapper.AppendToMapping("NoUnderline",(h,v) => 
+		{
+			h.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
+		});
 		#endif
 
 		#region Firebase AuthClient
@@ -51,13 +55,15 @@ public static class MauiProgram
 		builder.Services.AddSingleton<DatabaseManager>();
 		builder.Services.AddSingleton<AuthPageModel>();
 		builder.Services.AddSingleton<SettingsPageModel>();
+		builder.Services.AddSingleton<PersonalTaskPageModel>();
 
 		builder.Services.AddTransient<AuthPage>();
+		builder.Services.AddTransient<PersonalTaskPage>();
+		builder.Services.AddTransient<TeamTaskPage>();
 		builder.Services.AddTransient<SignInView>();
 		builder.Services.AddTransient<RegisterView>();
 		builder.Services.AddTransient<LostPasswordView>();
 		builder.Services.AddTransient<SettingsPage>();
-		builder.Services.AddTransient<DashboardPage>();
 
 #if DEBUG
 		builder.Logging.AddDebug();

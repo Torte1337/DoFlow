@@ -1,13 +1,14 @@
-using System;
-using System.ComponentModel.DataAnnotations;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace DoFlow.Models;
 
-public class TodoModel
+public partial class TodoModel : ObservableObject
 {
     public string Id {get;set;}
-    public string Name {get;set;}
-    public bool IsDone {get;set;}
-    public string AdminId {get;set;}
-    public string TeamId {get;set;}
+    public string Title {get;set;}
+    public string OwnerId {get;set;}
+    public string? TeamId {get;set;}
+
+    [ObservableProperty]
+    private bool isChecked;
 }

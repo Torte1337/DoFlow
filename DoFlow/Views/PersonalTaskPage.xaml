@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DoFlow.Views.PersonalTaskPage"
+             xmlns:pm="clr-namespace:DoFlow.ViewModels"
+             xmlns:models="clr-namespace:DoFlow.Models"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             BackgroundColor="#FF323232"
+             Title="PersonalTaskPage">
+    
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="150"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="100"/>
+        </Grid.RowDefinitions>
+
+
+        <ListView x:DataType="pm:PersonalTaskPageModel" ItemsSource="{Binding PersonalTasks}" Grid.Row="1">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <SwipeView>
+                            <SwipeView.RightItems>
+                                <SwipeItems>
+                                    <SwipeItem BackgroundColor="#FF580000" Text="Delete"/>
+                                </SwipeItems>
+                            </SwipeView.RightItems>
+                            <Grid Padding="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="50"/>
+                                </Grid.ColumnDefinitions>
+                                <Label x:DataType="models:TodoModel" Text="{Binding Title}" Grid.Column="0" TextColor="White"/>
+                                <CheckBox x:DataType="models:TodoModel" IsChecked="{Binding IsChecked}" CheckedChanged="CheckBox_CheckedChanged" Grid.Column="1" Color="White"/>
+                            </Grid>
+                        </SwipeView>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+
+
+        <Button x:DataType="pm:PersonalTaskPageModel" 
+            Text="+" 
+            Grid.Row="2"
+            CornerRadius="100"
+            WidthRequest="50"
+            HeightRequest="50"
+            FontSize="25"
+            HorizontalOptions="End"
+            BackgroundColor="#00F2FF"
+            TextColor="Black"
+            TextTransform="Uppercase"
+            FontAttributes="Bold"
+            FontFamily=""
+            Command="{Binding AddPersonalTaskCommand}"/>
+
+
+    </Grid>
+    
+</ContentPage>

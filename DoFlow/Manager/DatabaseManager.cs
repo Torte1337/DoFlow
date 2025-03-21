@@ -48,6 +48,8 @@ public partial class DatabaseManager : ObservableObject
 
             ActiveUser = user;
 
+            await OnCreatePersonalTeam();
+
             return true;
         }
         catch(Exception ex)
@@ -149,133 +151,101 @@ public partial class DatabaseManager : ObservableObject
             return false;
         }
     }
-    
+    /// <summary>
+    /// Methode legt den user in der Rt Db an
+    /// </summary>
+    /// <returns></returns>
+    public async Task<bool> OnCreatePersonalTeam()
+    {
+        try
+        {
+            var userList = await _client.Child("Users").OnceAsync<UserModel>();
+
+            var userExist = userList.Any(u => u.Object.Id == ActiveUser.Id);
+
+            if(!userExist)
+                await _client.Child("Users").Child(ActiveUser.Id).PutAsync(ActiveUser);
+
+            return true;
+        }
+        catch(Exception ex)
+        {
+            return false;
+        }
+    }
     
     
     #endregion
-    #region Teammethoden
-    /// <summary>
-    /// Methode fügt ein Team in die Datenbank hinzu
-    /// </summary>
-    /// <param name="newTeam"></param>
-    /// <returns></returns>
-    public async Task<bool> OnAddTeamToDatabase(TeamModel newTeam, UserModel newMember)
-    {
-        try
-        {
-            await _client.Child("Teams").Child(newTeam.TeamId).PutAsync(newTeam);
-            await OnJoinTeam(newTeam.TeamId,newMember);
-            return true;
-        }
-        catch(Exception ex)
-        {
-            return false;
-        }
-    }
-    /// <summary>
-    /// Methode löscht ein Team aus der Datenbank
-    /// </summary>
-    /// <param name="team"></param>
-    /// <returns></returns>
-    public async Task<bool> OnDeleteTeam(TeamModel team)
-    {
-        try
-        {
-            await _client.Child("Teams").Child(team.TeamId).DeleteAsync();
-            return true;
-        }
-        catch(Exception ex)
-        {
-            return false;
-        }
-    }
-    /// <summary>
-    /// Methode updated ein existierendes Team
-    /// </summary>
-    /// <param name="team"></param>
-    /// <returns></returns>
-    public async Task<bool> OnUpdateTeam(TeamModel team)
-    {
-        try
-        {
-            await _client.Child("Teams").Child(team.TeamId).PutAsync(team);
-            return true;
-        }
-        catch(Exception ex)
-        {
-            return false;
-        }
-    }
-    public async Task<bool> OnSearchTeam(string Id)
-    {
-        try
-        {
-            var teamQuery = await _client.Child("Teams").Child(Id).OnceSingleAsync<TeamModel>();
 
-            if(teamQuery != null)
+    #region Todos Team
+    
+    #endregion
+
+    #region Team Methods
+
+    #endregion
+
+    #region Todos Personal
+    public async Task<bool> OnAddTodo(TodoModel newTodo)
+    {
+        try
+        {
+            if(string.IsNullOrEmpty(newTodo.TeamId))
+            {
+                //Personal Tasks
+                await _client.Child("Users").Child(ActiveUser.Id).Child("Tasks").Child(newTodo.Id).PutAsync(newTodo);
                 return true;
+            }
+            else if(!string.IsNullOrEmpty(newTodo.TeamId))
+            {
+                //Hier wird nicht im User der Task gespeichert sondern im Team
+                return true;
+            }
             else
                 return false;
+
         }
         catch(Exception ex)
         {
             return false;
         }
     }
-    public async Task<bool> OnJoinTeam(string teamID, UserModel user)
+    public async Task<List<TodoModel>> OnGetPersonalTasks(string userId)
     {
         try
         {
-            await _client
-                .Child("Teams")
-                .Child(teamID)
-                .Child("Members")
-                .Child(user.Id)
-                .PutAsync(user);
-            return true;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Fehler: {ex.Message}");
-            return false;
-        }
-    }
-    public async Task<List<TeamModel>> OnGetMyTeams(string userID)
-    {
-        try
-        {
-            var allTeams = await _client.Child("Teams").OnceAsync<TeamModel>();
-            var userTeams = new List<TeamModel>();
+            var tasks = await _client.Child("Users")
+                                     .Child(userId)
+                                     .Child("Tasks")
+                                     .OnceAsync<TodoModel>();
 
-            foreach (var team in allTeams)
-            {
-                var teamData = team.Object;
+            var result = tasks.Select(x => x.Object).ToList();
 
-                // Prüfen, ob der Benutzer in den Members enthalten ist
-                if (teamData.Members != null && teamData.Members.ContainsKey(userID))
-                {
-                    userTeams.Add(teamData);
-                }
-            }
-
-            return userTeams;
+            return result;
         }
-        catch (Exception ex)
+        catch(Exception ex)
         {
-            Console.WriteLine($"Fehler: {ex.Message}");
             return null;
         }
     }
-    public async Task<bool> OnLeaveTeam(string teamId, string userId)
+    public async Task<bool> OnRemoveTask(string taskId, string userId)
     {
         try
         {
-            await _client
-            .Child("Teams")
-            .Child(teamId)
-            .Child("Members")
-            .Child(userId)
-            .DeleteAsync();
+            await _client.Child("Users").Child(userId).Child("Tasks").Child(taskId).DeleteAsync();
+
+            return true;
+        }
+        catch(Exception ex)
+        {
+            return false;
+        }
+    }
+    public async Task<bool> OnUpdateTask(string userId, TodoModel updatedModel)
+    {
+        try
+        {
+            await _client.Child("Users").Child(userId).Child("Tasks").Child(updatedModel.Id).PutAsync(updatedModel);
 
             return true;
         }
@@ -285,7 +255,6 @@ public partial class DatabaseManager : ObservableObject
         }
     }
     #endregion
-
 
 
 

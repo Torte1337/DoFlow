@@ -5,28 +5,31 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:DoFlow"
     xmlns:views="clr-namespace:DoFlow.Views"
-    Shell.TabBarBackgroundColor="#FF323232"
-    Shell.TabBarTitleColor="Black"
-    Shell.TabBarUnselectedColor="Gray"
-    Shell.NavBarIsVisible ="false"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarBackgroundColor="#FF323232"
+    Shell.TabBarUnselectedColor="#FFB6B6B6"
+    Shell.TabBarTitleColor="White"
     Title="DoFlow">
 
     <Shell.Behaviors>
         <toolkit:StatusBarBehavior StatusBarColor="#FF323232"/>
     </Shell.Behaviors>
+    
+    <ShellContent Title="Auth" Route="AuthPage" ContentTemplate="{DataTemplate views:AuthPage}" Shell.FlyoutBehavior="Disabled"/>
 
-    <ShellContent Route="AuthPage" ContentTemplate="{DataTemplate views:AuthPage}"/>
 
+    <TabBar>
+        <ShellContent Title="Eigene Aufgaben" Route="PersonalTaskPage" ContentTemplate="{DataTemplate views:PersonalTaskPage}"/>
 
-    <TabBar IsVisible="False">
-        <Tab Title="Dashboard">
-            <ShellContent ContentTemplate="{DataTemplate views:DashboardPage}"/>
-        </Tab>
-        <Tab Title="Einstellungen">
-           <ShellContent ContentTemplate="{DataTemplate views:SettingsPage}"/>
-        </Tab>
+        <ShellContent Title="Team Aufgaben" Route="TeamTaskPage" ContentTemplate="{DataTemplate views:TeamTaskPage}"/>
+
+        <ShellContent Title="Einstellungen" Route="SettingsPage" ContentTemplate="{DataTemplate views:SettingsPage}"/>
+
     </TabBar>
+
+    
+
    
 
     

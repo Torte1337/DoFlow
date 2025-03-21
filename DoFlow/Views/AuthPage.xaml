@@ -9,7 +9,7 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="300"/>
+            <RowDefinition Height="250"/>
             <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -17,12 +17,16 @@
 
         <Border StrokeShape="RoundRectangle 15,15,15,15"
             Stroke="Gray"
-            BackgroundColor="#FF00B7FF"
+            BackgroundColor="Black"
             Grid.Row="0"
             HeightRequest="150"
             WidthRequest="150"
             HorizontalOptions="Center">
+            <Image Source="logo300.svg"/>
         </Border>
+
+        <Label Text="DoFlow" Grid.Row="0" HorizontalOptions="Center" TextColor="White" 
+            FontAttributes="Bold" FontSize="30" FontFamily="" VerticalOptions="End" VerticalTextAlignment="Center"/>
 
 
         <ContentView IsVisible="{Binding LoginViewActive}" Content="{Binding SignInView}" Grid.Row="2"/>
