@@ -8,7 +8,7 @@ using DoFlow.ViewModels.ViewModelBase;
 using DoFlow.Views;
 using CommunityToolkit.Mvvm.Messaging;
 using DoFlow.Messages;
-using Android.OS;
+using DoFlow.Services;
 
 namespace DoFlow.ViewModels;
 
@@ -19,10 +19,12 @@ public partial class SettingsPageModel : BaseViewModel
 
     [ObservableProperty] private ObservableCollection<TeamModel> _teams = new ObservableCollection<TeamModel>();
     [ObservableProperty] private string teamidField;
+    private readonly FirebaseService _firebaseService;
 
-    public SettingsPageModel(DatabaseManager mgr)
+    public SettingsPageModel(DatabaseManager mgr, FirebaseService _service)
     {
         manager = mgr;
+        _firebaseService = _service;
         OnLoadData();
         WeakReferenceMessenger.Default.Register<MessageUserDeleted>(this,OnCleanMethod);
     }
@@ -72,6 +74,11 @@ public partial class SettingsPageModel : BaseViewModel
     {
         if(await manager.OnLeaveTeam(teamid))
         {
+            if(manager.TeamTaskSubscriptions.ContainsKey(teamid))
+            {
+                manager.TeamTaskSubscriptions[teamid]?.Dispose();
+                manager.TeamTaskSubscriptions.Remove(teamid);
+            }
             await Shell.Current.DisplayAlert("Info", "Das wurde verlassen","Ok");
             OnLoadData();
         }
@@ -81,8 +88,10 @@ public partial class SettingsPageModel : BaseViewModel
     {
         if(await manager.OnJoinTeam(TeamidField))
         {
+            OnSubscribeToTeamTasks(TeamidField);
             TeamidField = "";
             await Shell.Current.DisplayAlert("Info","Sie sind nun im Team","Ok");
+            OnLoadData();
         }
         else
         {
@@ -101,5 +110,25 @@ public partial class SettingsPageModel : BaseViewModel
         }
     }
 
+    private void OnSubscribeToTeamTasks(string teamId)
+    {   
+        if(manager.TeamTaskSubscriptions.ContainsKey(teamId))
+        {
+            manager.TeamTaskSubscriptions[teamId]?.Dispose();
+            manager.TeamTaskSubscriptions.Remove(teamId);
+        }
+        var subscription = _firebaseService.SubscribeToTeamTasks(
+            teamId,
+            onTaskAddedOrChanged: task =>
+            {
+                Console.WriteLine($"[Task Added/Changed] {task.Title}");
+            },
+            onTaskDeleted: taskId =>
+            {
+                Console.WriteLine($"[Task Deleted] {taskId}");
+            });
+
+        manager.TeamTaskSubscriptions [teamId] = subscription;
+    }
 
 }

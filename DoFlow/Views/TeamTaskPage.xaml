@@ -5,6 +5,7 @@
              xmlns:pm="clr-namespace:DoFlow.ViewModels"
              xmlns:models="clr-namespace:DoFlow.Models"
              xmlns:Converter="clr-namespace:DoFlow.Converter"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              BackgroundColor="#FF323232"
              Title="TeamTaskPage">
 
@@ -31,7 +32,12 @@
             <Picker x:DataType="pm:TeamTaskPageModel" 
                 ItemsSource="{Binding Teams}"
                 SelectedItem="{Binding SelectedTeam}"
-                ItemDisplayBinding="{Binding Name}"/>
+                ItemDisplayBinding="{Binding Name}"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                VerticalTextAlignment="Center"
+                HorizontalTextAlignment="Center">
+            </Picker>
         </Border>
 
         <ListView x:DataType="pm:TeamTaskPageModel" ItemsSource="{Binding TeamToDos}" Grid.Row="2">
@@ -41,7 +47,9 @@
                         <SwipeView>
                             <SwipeView.RightItems>
                                 <SwipeItems>
-                                    <SwipeItem BackgroundColor="#FF580000" Text="Delete"/>
+                                    <SwipeItem BackgroundColor="#FF580000" Text="Delete" 
+                                               Command="{Binding Source={x:Reference TeamTaskPage}, Path=BindingContext.DeleteTaskCommand}" 
+                                               CommandParameter="{Binding .}"/>
                                 </SwipeItems>
                             </SwipeView.RightItems>
                             <Grid Padding="10">
@@ -50,7 +58,7 @@
                                     <ColumnDefinition Width="50"/>
                                 </Grid.ColumnDefinitions>
                                 <Label x:DataType="models:TodoModel" Text="{Binding Title}" Grid.Column="0" TextColor="White"/>
-                                <CheckBox x:DataType="models:TodoModel" IsChecked="{Binding IsChecked}" CheckedChanged="CheckBox_CheckedChanged" Grid.Column="1" Color="White"/>
+                                <CheckBox x:DataType="models:TodoModel" IsChecked="{Binding IsChecked}" Grid.Column="1" Color="White"/>
                             </Grid>
                         </SwipeView>
                     </ViewCell>
@@ -73,7 +81,6 @@
             TextTransform="Uppercase"
             FontAttributes="Bold"
             FontFamily=""
-            IsEnabled="{Binding SelectedTeam,Converter={StaticResource StringToBoolConverter}}"
             Command="{Binding AddTaskToTeamCommand}"/>
 
 

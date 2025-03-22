@@ -17,6 +17,8 @@ public partial class DatabaseManager : ObservableObject
     private readonly FirebaseAuthClient authClient;
     private readonly FirebaseClient _client;
     [ObservableProperty] private UserModel activeUser = null;
+    
+    [ObservableProperty] private Dictionary<string, IDisposable> _teamTaskSubscriptions = new();
 
     public DatabaseManager(FirebaseAuthClient client, FirebaseClient cl)
     {
@@ -228,20 +230,27 @@ public partial class DatabaseManager : ObservableObject
     {
         try
         {
-            var team = await _client.Child("Teams").Child(teamId).OnceSingleAsync<TeamModel>();
-
-            if(team == null)
+            // Teamdaten abrufen
+            var teamSnapshot = await _client.Child("Teams").Child(teamId).OnceSingleAsync<dynamic>();
+            if (teamSnapshot == null)
                 return false;
 
-            if(!team.MemberIds.Contains(ActiveUser.Id))
+            // MemberIds extrahieren
+            List<string> memberIds = teamSnapshot.MemberIds?.ToObject<List<string>>() ?? new List<string>();
+
+            // Prüfen, ob User schon Mitglied ist
+            if (!memberIds.Contains(ActiveUser.Id))
             {
-                team.MemberIds.Add(ActiveUser.Id);
-                await _client.Child("Teams").Child(teamId).Child("MemberIds").PutAsync(team.MemberIds);
+                memberIds.Add(ActiveUser.Id);
+                // Nur das MemberIds-Feld aktualisieren
+                await _client.Child("Teams").Child(teamId).Child("MemberIds").PutAsync(memberIds);
             }
+
             return true;
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
+            Console.WriteLine($"Fehler beim Team-Join: {ex.Message}");
             return false;
         }
     }
@@ -249,28 +258,34 @@ public partial class DatabaseManager : ObservableObject
     {
         try
         {
-            var team = await _client.Child("Teams").Child(teamId).OnceSingleAsync<TeamModel>();
-
-            if (team == null)
+            // Teamdaten abrufen
+            var teamSnapshot = await _client.Child("Teams").Child(teamId).OnceSingleAsync<dynamic>();
+            if (teamSnapshot == null)
                 return false;
 
-            if(team.AdminId == ActiveUser.Id)
+            string adminId = teamSnapshot.AdminId;
+            var memberIds = teamSnapshot.MemberIds?.ToObject<List<string>>() ?? new List<string>();
+
+            // Falls der aktuelle User Admin ist → Team löschen
+            if (adminId == ActiveUser.Id)
             {
                 await _client.Child("Teams").Child(teamId).DeleteAsync();
+                Console.WriteLine($"Team {teamId} gelöscht, da Admin ({ActiveUser.Id}) es verlassen hat.");
                 return true;
             }
 
-            if (team.MemberIds.Contains(ActiveUser.Id))
+            // Falls User Mitglied ist → entfernen und speichern
+            if (memberIds.Contains(ActiveUser.Id))
             {
-                team.MemberIds.Remove(ActiveUser.Id);
-
-                await _client.Child("Teams").Child(teamId).Child("MemberIds").PutAsync(team.MemberIds);
+                memberIds.Remove(ActiveUser.Id);
+                await _client.Child("Teams").Child(teamId).Child("MemberIds").PutAsync(memberIds);
             }
 
             return true;
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
+            Console.WriteLine($"Fehler beim Verlassen des Teams: {ex.Message}");
             return false;
         }
     }
@@ -278,19 +293,58 @@ public partial class DatabaseManager : ObservableObject
     {
         try
         {
-            var allTeams = await _client.Child("Teams").OnceAsync<TeamModel>();
-            var userTeams = allTeams
-                            .Where(team => team.Object.MemberIds.Contains(ActiveUser.Id))
-                            .Select(team => team.Object)
-                            .ToList();
+            var allTeamsSnapshot = await _client.Child("Teams").OnceAsync<dynamic>();
+            var userTeams = new List<TeamModel>();
+
+            foreach (var item in allTeamsSnapshot)
+            {
+                if (item.Object == null || item.Object.MemberIds == null)
+                    continue;
+
+                // Prüfen, ob der aktuelle User im Team ist
+                List<string> userList = item.Object.MemberIds.ToObject<List<string>>();
+                if (!userList.Contains(ActiveUser.Id))
+                    continue;
+
+                // Team erstellen
+                TeamModel newTeam = new TeamModel
+                {
+                    TeamId = item.Key,
+                    Name = item.Object.Name,
+                    AdminId = item.Object.AdminId,
+                    MemberIds = userList,
+                    Tasks = new List<TodoModel>()
+                };
+
+                // Tasks übernehmen, falls vorhanden
+                if (item.Object.Tasks != null)
+                {
+                    foreach (var taskItem in item.Object.Tasks)
+                    {
+                        TodoModel task = new TodoModel
+                        {
+                            Id = taskItem.Value.Id,
+                            Title = taskItem.Value.Title,
+                            OwnerId = taskItem.Value.OwnerId,
+                            TeamId = taskItem.Value.TeamId,
+                            IsChecked = taskItem.Value.isChecked ?? false
+                        };
+                        newTeam.Tasks.Add(task);
+                    }
+                }
+
+                userTeams.Add(newTeam);
+            }
 
             return userTeams;
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
+            Console.WriteLine($"Fehler beim Abrufen der Teams: {ex.Message}");
             return null;
         }
     }
+
     #endregion
 
     #region Todos Personal/Team
@@ -359,6 +413,7 @@ public partial class DatabaseManager : ObservableObject
     {
         try
         {
+            
             await _client.Child("Users").Child(userId).Child("Tasks").Child(taskId).DeleteAsync();
 
             return true;
@@ -374,6 +429,18 @@ public partial class DatabaseManager : ObservableObject
         {
             await _client.Child("Users").Child(userId).Child("Tasks").Child(updatedModel.Id).PutAsync(updatedModel);
 
+            return true;
+        }
+        catch(Exception ex)
+        {
+            return false;
+        }
+    }
+    public async Task<bool> OnDeleteTeamTask(TodoModel model)
+    {
+        try
+        {
+            await _client.Child("Teams").Child(model.TeamId).Child("Tasks").Child(model.Id).DeleteAsync();
             return true;
         }
         catch(Exception ex)

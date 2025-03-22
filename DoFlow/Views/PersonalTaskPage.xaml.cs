@@ -10,19 +10,4 @@ public partial class PersonalTaskPage : ContentPage
 		InitializeComponent();
 		BindingContext = pm;
 	}
-
-    private void CheckBox_CheckedChanged(object sender, CheckedChangedEventArgs e)
-    {
-		if(sender is CheckBox checkBox)
-		{
-			var todoModel = (TodoModel)checkBox.BindingContext;
-
-			if(BindingContext is PersonalTaskPageModel viewModel)
-				OnSendToViewModel(viewModel,todoModel);
-		}
-    }
-	private async void OnSendToViewModel(PersonalTaskPageModel viewModel,TodoModel model)
-	{
-		await viewModel.OnCheckIsChanged(model);
-	}
 }

@@ -9,7 +9,7 @@ public class TeamModel
     public string TeamId { get; set; }
     public string Name { get; set; }
     public string AdminId { get; set; }
-    public List<string> MemberIds {get;set;} = new();
-    public List<TodoModel> Tasks {get;set;} = new();
+    public List<string> MemberIds {get;set;} = new List<string>();
+    public List<TodoModel> Tasks {get;set;} = new List<TodoModel>();
     
 }

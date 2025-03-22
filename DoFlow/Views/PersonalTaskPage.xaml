@@ -32,7 +32,7 @@
                                     <ColumnDefinition Width="50"/>
                                 </Grid.ColumnDefinitions>
                                 <Label x:DataType="models:TodoModel" Text="{Binding Title}" Grid.Column="0" TextColor="White"/>
-                                <CheckBox x:DataType="models:TodoModel" IsChecked="{Binding IsChecked}" CheckedChanged="CheckBox_CheckedChanged" Grid.Column="1" Color="White"/>
+                                <CheckBox x:DataType="models:TodoModel" IsChecked="{Binding IsChecked}" Grid.Column="1" Color="White"/>
                             </Grid>
                         </SwipeView>
                     </ViewCell>

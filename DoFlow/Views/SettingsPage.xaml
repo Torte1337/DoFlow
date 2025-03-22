@@ -38,28 +38,54 @@
 
                 <Button Text="Team anlegen" BackgroundColor="#FF2D2D2D" Command="{Binding CreateTeamButtonCommand}"/>
                 
-                <ListView ItemsSource="{Binding Teams}">
+                <ListView ItemsSource="{Binding Teams}" SeparatorVisibility="None" RowHeight="100">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
                                 <Grid x:DataType="model:TeamModel">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*"/>
-                                        <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="100"/>
                                     </Grid.ColumnDefinitions>
 
+                                    <Border StrokeShape="RoundRectangle 15,15,15,15"
+                                        HeightRequest="80" Padding="10" WidthRequest="230" HorizontalOptions="Start"
+                                        Grid.Row="0" Grid.Column="0"
+                                        BackgroundColor="Gray">
+                                        <VerticalStackLayout>
+
+                                            <HorizontalStackLayout Grid.Row="0" Grid.Column="0">
+                                                <Label Text="Teamname: "/>
+                                                <Label Text="{Binding Name}"/>
+                                            </HorizontalStackLayout>
+
+                                            <HorizontalStackLayout Grid.Row="1" Grid.Column="0">
+                                                <Label Text="TeamId: "/>
+                                                <Label Text="{Binding TeamId}"/>
+                                            </HorizontalStackLayout>
+
+                                            <HorizontalStackLayout Grid.Row="2" Grid.Column="0">
+                                                <Label Text="Mitglieder: "/>
+                                                <Label Text="{Binding MemberIds.Count}"/>
+                                            </HorizontalStackLayout>
+
+                                        </VerticalStackLayout>
+                                        
+                                    </Border>
                                     
-                                    <Label Text="{Binding Name}" Grid.Row="0" Grid.Column="0"/>
-                                    <Label Text="{Binding TeamId}" Grid.Row="1" Grid.Column="0"/>
+
                                     
-                                    <Button Text="Verlassen" 
+                                    <Button Text="Verlassen" Margin="1"
                                         BackgroundColor="Red" 
                                         Grid.RowSpan="2" 
                                         Grid.Column="1" 
+                                        WidthRequest="100"
+                                        HeightRequest="80"
+                                        HorizontalOptions="End"
+                                        CornerRadius="20"
                                         Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}}, Path=BindingContext.LeaveTeamCommand}"
                                         CommandParameter="{Binding TeamId}"/>
                                 </Grid>

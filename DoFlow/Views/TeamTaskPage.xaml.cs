@@ -10,26 +10,13 @@ public partial class TeamTaskPage : ContentPage
 		InitializeComponent();
 		BindingContext = pm;
 	}
-
-    protected override void OnAppearing()
-    {
-        base.OnAppearing();
-		var pm = (TeamTaskPageModel)BindingContext;
-		// pm.OnRefreshTeamList();
-		// pm.OnRefreshToDoList();
-    }
-    private void CheckBox_CheckedChanged(object sender, CheckedChangedEventArgs e)
-    {
-		if(sender is CheckBox checkBox)
-		{
-			var todoModel = (TodoModel)checkBox.BindingContext;
-
-			if(BindingContext is TeamTaskPageModel viewModel)
-				OnSendToViewModel(viewModel,todoModel);
-		}
-    }
-	private async void OnSendToViewModel(TeamTaskPageModel viewModel,TodoModel model)
+	protected override async void OnAppearing()
 	{
-		await viewModel.OnCheckIsChanged(model);
+		base.OnAppearing();
+		var viewModel = BindingContext as TeamTaskPageModel;
+		if (viewModel != null)
+		{
+		    await viewModel.LoadTeams();
+		}
 	}
 }

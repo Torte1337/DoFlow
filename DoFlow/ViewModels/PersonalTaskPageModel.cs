@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -30,13 +31,29 @@ public partial class PersonalTaskPageModel : BaseViewModel
     private async void OnLoadTasks()
     {
         if(PersonalTasks is {Count: > 0})
+        {
+            foreach(var t in PersonalTasks)
+                t.PropertyChanged -= ToDo_PropertyChanged;
+
             PersonalTasks.Clear();
+        }
 
         var list = await manager.OnGetPersonalTasks(manager.ActiveUser.Id);
-
         var sortedList = list.OrderBy(x => x.IsChecked).ToList();
-        PersonalTasks = new ObservableCollection<TodoModel>(sortedList);
 
+        foreach(var todo in sortedList)
+        {
+            todo.PropertyChanged += ToDo_PropertyChanged;
+            PersonalTasks.Add(todo);
+        }
+
+    }
+    private void ToDo_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if(sender is TodoModel todo && e.PropertyName == nameof(TodoModel.IsChecked))
+        {
+            Task.Run(async () => await OnCheckIsChanged(todo));
+        }
     }
     public async Task OnCheckIsChanged(TodoModel model)
     {
@@ -46,6 +63,8 @@ public partial class PersonalTaskPageModel : BaseViewModel
     [RelayCommand]
     private async Task OnDeleteTask(TodoModel task)
     {
+        task.PropertyChanged -= ToDo_PropertyChanged;
+
         if(await manager.OnRemoveTask(task.Id,manager.ActiveUser.Id))
             OnLoadTasks();
     }
