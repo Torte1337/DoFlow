@@ -395,17 +395,30 @@ public partial class DatabaseManager : ObservableObject
     {
         try
         {
+            //Hier kann der Fehler sein, dass die App abstürtzt
             var tasks = await _client.Child("Teams")
                                      .Child(teamId)
                                      .Child("Tasks")
-                                     .OnceAsync<TodoModel>();
+                                     .OnceAsync<dynamic>();
 
-            var result = tasks.Select(x => x.Object).ToList();
+
+            var result = tasks.Select(item =>
+            {
+                TodoModel task = new TodoModel();
+                task.Id = item.Object.Id;
+                task.Title = item.Object.Title;
+                task.OwnerId = item.Object.OwnerId;
+                task.TeamId = item.Object.TeamId;
+                task.IsChecked = item.Object.IsChecked;
+                
+                return task;
+            }).ToList();
 
             return result;
         }
         catch(Exception ex)
         {
+            await Shell.Current.DisplayAlert("Fehler", ex.Message + " DB Fehler Aufgaben vom Team holen","Ok");
             return null;
         }
     }

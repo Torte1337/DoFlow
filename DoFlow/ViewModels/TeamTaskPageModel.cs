@@ -35,7 +35,7 @@ namespace DoFlow.ViewModels
         {
             try
             {
-                if (Teams.Count > 0)
+                if (Teams is {Count: > 0})
                     Teams.Clear();
 
                 var list = await manager.OnGetUserTeams();
