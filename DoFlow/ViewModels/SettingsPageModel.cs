@@ -130,5 +130,13 @@ public partial class SettingsPageModel : BaseViewModel
 
         manager.TeamTaskSubscriptions [teamId] = subscription;
     }
-
+    [RelayCommand]
+    private async Task OnLogoutButton()
+    {
+        if(manager.OnLogout())
+        {
+            await Shell.Current.DisplayAlert("Abgemeldet","Du wurdest abgemeldet","Ok");
+            await Shell.Current.GoToAsync($"//{nameof(AuthPage)}");
+        }
+    }
 }

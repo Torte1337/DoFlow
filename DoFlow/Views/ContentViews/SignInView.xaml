@@ -61,7 +61,7 @@
                 </Border>
 
 <!-- Register und Lostpasswort Buttons -->
-                <HorizontalStackLayout Grid.Row="4" HorizontalOptions="Center" Grid.ColumnSpan="2" Spacing="20" Margin="20">
+                <HorizontalStackLayout Grid.Row="4" HorizontalOptions="Center" Grid.ColumnSpan="2" Spacing="20" Margin="5">
 
                     <Label Text="Passwort vergessen...?" TextColor="Gray">
                         <Label.GestureRecognizers>

@@ -45,8 +45,20 @@ public partial class AuthPageModel : BaseViewModel
         LostView = _serviceProvider.GetRequiredService<LostPasswordView>();
         RegisterView = _serviceProvider.GetRequiredService<RegisterView>();
 
-
-        OnSwitchViews(0);
+        OnCheckUserExist();
+    }
+    private async void OnCheckUserExist()
+    {
+        if(await dbManager.OnCheckPresetExist())
+        {
+            await Shell.Current.GoToAsync($"//{nameof(PersonalTaskPage)}");
+            EmailField = "";
+            PasswordField = "";
+        }
+        else
+        {
+            OnSwitchViews(0);
+        }
     }
 
     [RelayCommand]
@@ -54,6 +66,14 @@ public partial class AuthPageModel : BaseViewModel
     {
         if(await dbManager.OnSignIn(EmailField,PasswordField))
         {
+            var resultAction = await Shell.Current.DisplayActionSheet("Anmeldedaten speichern ?","Nein",null,"Ja");
+            if(resultAction == "Ja")
+            {
+                if(await dbManager.OnSavePreset(EmailField,PasswordField))
+                {
+                    await Shell.Current.DisplayAlert("Info","Daten wurden gespeichert","Ok");
+                }
+            }
             await Shell.Current.GoToAsync($"//{nameof(PersonalTaskPage)}");
             EmailField = "";
             PasswordField = "";
@@ -73,6 +93,7 @@ public partial class AuthPageModel : BaseViewModel
     private async Task OnLostPassword()
     {
         await dbManager.OnLostpassword(LostEmailField);
+        await dbManager.OnClearPresets();
         OnSwitchViews(0);
     }
     [RelayCommand]

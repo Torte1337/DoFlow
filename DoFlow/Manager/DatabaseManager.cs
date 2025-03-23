@@ -475,4 +475,47 @@ public partial class DatabaseManager : ObservableObject
     }
     #endregion
 
+
+    public async Task<bool> OnCheckPresetExist()
+    {
+        if(Preferences.ContainsKey("user_email") && Preferences.ContainsKey("user_password"))
+        {
+            var email = Preferences.Get("user_email",string.Empty);
+            var password = Preferences.Get("user_password",string.Empty);
+
+            if(await OnSignIn(email,password))
+                return true;
+            else
+                return false;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    public async Task<bool> OnSavePreset(string email, string password)
+    {
+        try
+        {
+            Preferences.Set("user_email",email);
+            Preferences.Set("user_password",password);
+            return true;
+        }
+        catch(Exception ex)
+        {
+            return false;
+        }
+    }
+    public async Task<bool> OnClearPresets()
+    {
+        try
+        {
+            Preferences.Clear();
+            return true;
+        }
+        catch(Exception ex)
+        {
+            return false;
+        }
+    }
 }
