@@ -449,6 +449,18 @@ public partial class DatabaseManager : ObservableObject
             return false;
         }
     }
+    public async Task<bool> OnUpdateTeamTask(string userId, TodoModel updatedModel)
+    {
+        try
+        {
+            await _client.Child("Teams").Child(updatedModel.TeamId).Child("Tasks").Child(updatedModel.Id).PutAsync(updatedModel);
+            return true;
+        }
+        catch(Exception ex)
+        {
+            return false;
+        }
+    }
     public async Task<bool> OnDeleteTeamTask(TodoModel model)
     {
         try

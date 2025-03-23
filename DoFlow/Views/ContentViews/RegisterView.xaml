@@ -15,11 +15,11 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="50"/>
+                    <RowDefinition Height="70"/>
+                    <RowDefinition Height="70"/>
+                    <RowDefinition Height="70"/>
                     <RowDefinition Height="60"/>
-                    <RowDefinition Height="60"/>
-                    <RowDefinition Height="60"/>
-                    <RowDefinition Height="60"/>
-                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="50"/>
                 </Grid.RowDefinitions>
                 
                  <!-- header text -->
@@ -37,32 +37,38 @@
 <!-- Emailfeld -->
                 <Border StrokeShape="RoundRectangle 5,5,5,5"
                         WidthRequest="300"
-                        HeightRequest="50"
+                        HeightRequest="60"
                         Grid.Row="2"
                         Grid.ColumnSpan="2">
                         <Entry Placeholder="Email Adresse..." Margin="5"
-                                Text="{Binding RegisterEmailField}"/>
+                                Text="{Binding RegisterEmailField}"
+                                TextColor="Black"
+                                HeightRequest="60"/>
 
                 </Border>
 <!-- Passwortfeld -->
                 <Border StrokeShape="RoundRectangle 5,5,5,5"
                         WidthRequest="300"
-                        HeightRequest="50"
+                        HeightRequest="60"
                         Grid.Row="3"
                         Grid.ColumnSpan="2">
                         <Entry Placeholder="Passwort..." Text="{Binding RegisterPasswordField}"
-                                Margin="5" IsPassword="True"/>
+                                Margin="5" IsPassword="True"
+                                TextColor="Black"
+                                HeightRequest="60"/>
 
                 </Border>
 
 <!-- Username -->
                 <Border StrokeShape="RoundRectangle 5,5,5,5"
                         WidthRequest="300"
-                        HeightRequest="50"
+                        HeightRequest="60"
                         Grid.Row="4"
                         Grid.ColumnSpan="3">
                         <Entry Placeholder="Benutzername..." 
-                                Text="{Binding RegisterUsernameField}" Margin="5"/>
+                                Text="{Binding RegisterUsernameField}" Margin="5"
+                                TextColor="Black"
+                                HeightRequest="60"/>
 
                 </Border>
 

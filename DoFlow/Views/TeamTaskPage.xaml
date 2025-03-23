@@ -1,22 +1,12 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="DoFlow.Views.TeamTaskPage"
              xmlns:pm="clr-namespace:DoFlow.ViewModels"
              xmlns:models="clr-namespace:DoFlow.Models"
-             xmlns:Converter="clr-namespace:DoFlow.Converter"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Name="TeamTaskPageRef"
              BackgroundColor="#FF323232"
              Title="TeamTaskPage">
-
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <Converter:StringNullOrEmptyToBoolConverter x:Key="StringToBoolConverter"/>
-        </ResourceDictionary>
-    </ContentPage.Resources>
-
-
-
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="100"/>
@@ -25,40 +15,46 @@
             <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
 
+        <!-- Picker -->
         <Border StrokeShape="RoundRectangle 15,15,15,15"
-            WidthRequest="150" Grid.Row="0" BackgroundColor="White"
-            HeightRequest="50">
+                WidthRequest="150" Grid.Row="0" BackgroundColor="White"
+                HeightRequest="50">
 
-            <Picker x:DataType="pm:TeamTaskPageModel" 
+            <Picker 
                 ItemsSource="{Binding Teams}"
                 SelectedItem="{Binding SelectedTeam}"
                 ItemDisplayBinding="{Binding Name}"
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
                 VerticalTextAlignment="Center"
-                HorizontalTextAlignment="Center">
-            </Picker>
+                HorizontalTextAlignment="Center" />
         </Border>
 
-        <ListView x:DataType="pm:TeamTaskPageModel" ItemsSource="{Binding TeamToDos}" Grid.Row="2">
+        <!-- TeamToDos -->
+        <ListView Grid.Row="2"
+                  ItemsSource="{Binding TeamToDos}">
             <ListView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="models:TodoModel">
                     <ViewCell>
                         <SwipeView>
                             <SwipeView.RightItems>
                                 <SwipeItems>
-                                    <SwipeItem BackgroundColor="#FF580000" Text="Delete" 
-                                               Command="{Binding Source={x:Reference TeamTaskPage}, Path=BindingContext.DeleteTaskCommand}" 
-                                               CommandParameter="{Binding .}"/>
+                                    <SwipeItem 
+                                        BackgroundColor="#FF580000" 
+                                        Text="Delete"
+                                        Command="{Binding Source={x:Reference TeamTaskPageRef}, Path=BindingContext.DeleteTaskCommand}" 
+                                        CommandParameter="{Binding .}" />
                                 </SwipeItems>
                             </SwipeView.RightItems>
+
                             <Grid Padding="10">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="50"/>
                                 </Grid.ColumnDefinitions>
-                                <Label x:DataType="models:TodoModel" Text="{Binding Title}" Grid.Column="0" TextColor="White"/>
-                                <CheckBox x:DataType="models:TodoModel" IsChecked="{Binding IsChecked}" Grid.Column="1" Color="White"/>
+
+                                <Label Text="{Binding Title}" Grid.Column="0" TextColor="White"/>
+                                <CheckBox IsChecked="{Binding IsChecked}" Grid.Column="1" Color="White"/>
                             </Grid>
                         </SwipeView>
                     </ViewCell>
@@ -66,9 +62,8 @@
             </ListView.ItemTemplate>
         </ListView>
 
-
-
-        <Button x:DataType="pm:TeamTaskPageModel" 
+        <!-- Button -->
+        <Button 
             Text="+" 
             Grid.Row="3"
             CornerRadius="100"
@@ -80,10 +75,6 @@
             TextColor="Black"
             TextTransform="Uppercase"
             FontAttributes="Bold"
-            FontFamily=""
-            Command="{Binding AddTaskToTeamCommand}"/>
-
-
-
+            Command="{Binding AddTaskToTeamCommand}" />
     </Grid>
 </ContentPage>

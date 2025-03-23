@@ -5,6 +5,7 @@
              xmlns:pm="clr-namespace:DoFlow.ViewModels"
              xmlns:models="clr-namespace:DoFlow.Models"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Name="PersonalTaskPageRef"
              BackgroundColor="#FF323232"
              Title="PersonalTaskPage">
     
@@ -16,14 +17,18 @@
         </Grid.RowDefinitions>
 
 
-        <ListView x:DataType="pm:PersonalTaskPageModel" ItemsSource="{Binding PersonalTasks}" Grid.Row="1">
+        <ListView x:DataType="pm:PersonalTaskPageModel" 
+            ItemsSource="{Binding PersonalTasks}" 
+            Grid.Row="1">
             <ListView.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="models:TodoModel">
                     <ViewCell>
                         <SwipeView>
                             <SwipeView.RightItems>
                                 <SwipeItems>
-                                    <SwipeItem BackgroundColor="#FF580000" Text="Delete"/>
+                                    <SwipeItem BackgroundColor="#FF580000" Text="Delete"
+                                         Command="{Binding Source={x:Reference PersonalTaskPageRef}, Path=BindingContext.DeleteTaskCommand}" 
+                                        CommandParameter="{Binding .}" />
                                 </SwipeItems>
                             </SwipeView.RightItems>
                             <Grid Padding="10">

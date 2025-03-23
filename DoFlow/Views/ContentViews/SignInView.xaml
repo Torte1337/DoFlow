@@ -15,10 +15,10 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50"/>
                     <RowDefinition Height="50"/>
-                    <RowDefinition Height="60"/>
-                    <RowDefinition Height="60"/>
-                    <RowDefinition Height="60"/>
-                    <RowDefinition Height="60"/>
+                    <RowDefinition Height="70"/>
+                    <RowDefinition Height="70"/>
+                    <RowDefinition Height="70"/>
+                    <RowDefinition Height="70"/>
                 </Grid.RowDefinitions>
 <!-- header text -->
                 <Label Text="Anmeldung" 
@@ -34,23 +34,29 @@
 <!-- Emailfeld -->
                 <Border StrokeShape="RoundRectangle 5,5,5,5"
                         WidthRequest="300"
-                        HeightRequest="50"
+                        HeightRequest="60"
                         Grid.Row="2"
                         Grid.ColumnSpan="2">
-                        <Entry Placeholder="Email Adresse..." Text="{Binding EmailField}" Margin="5"/>
+                        <Entry Placeholder="Email Adresse..." 
+                            Text="{Binding EmailField}" 
+                            Margin="5"
+                            HeightRequest="60"
+                            TextColor="Black"/>
 
                 </Border>
 
 <!-- Passwortfeld -->
                 <Border StrokeShape="RoundRectangle 5,5,5,5"
                         WidthRequest="300"
-                        HeightRequest="50"
+                        HeightRequest="60"
                         Grid.Row="3"
                         Grid.ColumnSpan="2">
                         <Entry Placeholder="Passwort..." 
                             Margin="5"
                             IsPassword="True"
-                            Text="{Binding PasswordField}"/>
+                            Text="{Binding PasswordField}"
+                            TextColor="Black"
+                            HeightRequest="60"/>
 
                 </Border>
 
